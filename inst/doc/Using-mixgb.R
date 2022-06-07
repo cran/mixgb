@@ -1,0 +1,61 @@
+## ---- include = FALSE---------------------------------------------------------
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+## -----------------------------------------------------------------------------
+library(mixgb)
+str(nhanes3_newborn)
+colSums(is.na(nhanes3_newborn))
+
+## ---- eval = FALSE------------------------------------------------------------
+#  # use mixgb with default settings
+#  imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+
+## ---- eval = FALSE------------------------------------------------------------
+#  # Use mixgb with chosen settings
+#  params <- list(
+#    max_depth = 6,
+#    gamma = 0.1,
+#    eta = 0.3,
+#    min_child_weight = 1,
+#    subsample = 1,
+#    colsample_bytree = 1,
+#    colsample_bylevel = 1,
+#    colsample_bynode = 1,
+#    nthread = 4,
+#    tree_method = "auto",
+#    gpu_id = 0,
+#    predictor = "auto"
+#  )
+#  
+#  imputed.data <- mixgb(
+#    data = nhanes3_newborn, m = 5, maxit = 1,
+#    ordinalAsInteger = TRUE, bootstrap = TRUE,
+#    pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
+#    initial.num = "normal", initial.int = "mode", initial.fac = "mode",
+#    save.models = FALSE, save.vars = NULL,
+#    xgb.params = params, nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
+#  )
+
+## -----------------------------------------------------------------------------
+cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
+cv.results$evaluation.log
+cv.results$response
+cv.results$best.nrounds
+
+## -----------------------------------------------------------------------------
+cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1, 
+                       response = "BMPHEAD", select_features = c("HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM",                           "BMPSB1", "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT"), verbose = FALSE)
+
+cv.results$best.nrounds
+
+## ---- eval = FALSE------------------------------------------------------------
+#  imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = 20)
+
+## -----------------------------------------------------------------------------
+system.time(imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1, ordinalAsInteger = FALSE))
+
+system.time(imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1, ordinalAsInteger = TRUE))
+
