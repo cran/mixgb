@@ -12,7 +12,7 @@
 
 <meta name="author" content="Yongshi Deng" />
 
-<meta name="date" content="2022-06-07" />
+<meta name="date" content="2023-02-16" />
 
 <title>mixgb: Multiple Imputation Through XGBoost</title>
 
@@ -335,20 +335,22 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">mixgb: Multiple Imputation Through
 XGBoost</h1>
 <h4 class="author">Yongshi Deng</h4>
-<h4 class="date">2022-06-07</h4>
+<h4 class="date">2023-02-16</h4>
 
 
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>Mixgb offers a scalable solution for imputing large datasets using
-XGBoost, bootstrapping and predictive mean matching. Mixgb is built
-under Fully Conditional Specification (FCS), where XGBoost imputation
-models are built for each incomplete variable. Mixgb can automatically
-handle different types of variables and users do not need to encode
-categorical variables themselves. Users can also choose different
-settings regarding bootstrapping and the types predictive mean matching
-to enhance imputation performance.</p>
+XGBoost, subsampling and predictive mean matching. Our method utilizes
+the capabilities of XGBoost, a highly efficient implementation of
+gradient boosted trees, to capture interactions and non-linear relations
+automatically. Moreover, we have integrated subsampling and predictive
+mean matching to minimize bias and reflect appropriate imputation
+variability. Our package supports various types of variables and offers
+flexible settings for subsampling and predictive mean matching. We also
+include diagnostic tools for evaluating the quality of the imputed
+values.</p>
 </div>
 <div id="impute-missing-values-with-mixgb" class="section level2">
 <h2>Impute missing values with <code>mixgb</code></h2>
@@ -389,44 +391,49 @@ variables with missing values.</p>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 </span></span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      161      169      124      167      117      192        7        0</span></span></code></pre></div>
 <p>To impute this dataset, we can use the default settings. The default
-number of imputed datasets <code>m = 5</code>. Note that we do not need
-to convert our data into dgCMatrix or one-hot coding format. Our package
-will convert it automatically. Variables should be of the following
-types: numeric, integer, factor or ordinal factor.</p>
+number of imputed datasets is <code>m = 5</code>. Note that we do not
+need to convert our data into dgCMatrix or one-hot coding format. Our
+package will automatically convert it for you. Variables should be of
+the following types: numeric, integer, factor or ordinal factor.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use mixgb with default settings</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>)</span></code></pre></div>
-<div id="customise-imputation-settings" class="section level3">
-<h3>Customise imputation settings</h3>
-<p>We can also customise imputation settings:</p>
+<div id="customize-imputation-settings" class="section level3">
+<h3>Customize imputation settings</h3>
+<p>We can also customize imputation settings:</p>
 <ul>
 <li><p>The number of imputed datasets <code>m</code></p></li>
 <li><p>The number of imputation iterations <code>maxit</code></p></li>
-<li><p>Whether to convert ordinal factors to integer (imputation process
-will be faster) <code>ordinalAsInteger</code></p></li>
-<li><p>Whether to use bootstrapping <code>bootstrap</code></p></li>
+<li><p>XGBoost hyperparameters and verbose settings.
+<code>xgb.params</code>, <code>nrounds</code>,
+<code>early_stopping_rounds</code>, <code>print_every_n</code> and
+<code>verbose</code>.</p></li>
+<li><p>Subsampling ratio. By default, <code>subsample = 0.7</code>.
+Users can change this value under the <code>xgb.params</code>
+argument.</p></li>
 <li><p>Predictive mean matching settings <code>pmm.type</code>,
 <code>pmm.k</code> and <code>pmm.link</code>.</p></li>
+<li><p>Whether ordinal factors should be converted to integer
+(imputation process may be faster)
+<code>ordinalAsInteger</code></p></li>
+<li><p>Whether or not to use bootstrapping
+<code>bootstrap</code></p></li>
 <li><p>Initial imputation methods for different types of variables
 <code>initial.num</code>, <code>initial.int</code> and
 <code>initial.fac</code>.</p></li>
 <li><p>Whether to save models for imputing newdata
 <code>save.models</code> and <code>save.vars</code>.</p></li>
-<li><p>XGBoost hyperparameters and verbose settings.
-<code>xgb.params</code>, <code>nrounds</code>,
-<code>early_stopping_rounds</code>, <code>print_every_n</code> and
-<code>verbose</code>.</p></li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use mixgb with chosen settings</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_depth =</span> <span class="dv">6</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma =</span> <span class="fl">0.1</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_depth =</span> <span class="dv">3</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma =</span> <span class="dv">0</span>,</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta =</span> <span class="fl">0.3</span>,</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_child_weight =</span> <span class="dv">1</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">subsample =</span> <span class="dv">1</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">subsample =</span> <span class="fl">0.7</span>,</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">colsample_bytree =</span> <span class="dv">1</span>,</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">colsample_bylevel =</span> <span class="dv">1</span>,</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">colsample_bynode =</span> <span class="dv">1</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">nthread =</span> <span class="dv">4</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">nthread =</span> <span class="dv">2</span>,</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">tree_method =</span> <span class="st">&quot;auto&quot;</span>,</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">gpu_id =</span> <span class="dv">0</span>,</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictor =</span> <span class="st">&quot;auto&quot;</span></span>
@@ -434,102 +441,74 @@ will be faster) <code>ordinalAsInteger</code></p></li>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(</span>
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>, <span class="at">maxit =</span> <span class="dv">1</span>,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">ordinalAsInteger =</span> <span class="cn">TRUE</span>, <span class="at">bootstrap =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">ordinalAsInteger =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">pmm.type =</span> <span class="st">&quot;auto&quot;</span>, <span class="at">pmm.k =</span> <span class="dv">5</span>, <span class="at">pmm.link =</span> <span class="st">&quot;prob&quot;</span>,</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial.num =</span> <span class="st">&quot;normal&quot;</span>, <span class="at">initial.int =</span> <span class="st">&quot;mode&quot;</span>, <span class="at">initial.fac =</span> <span class="st">&quot;mode&quot;</span>,</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">save.models =</span> <span class="cn">FALSE</span>, <span class="at">save.vars =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">xgb.params =</span> params, <span class="at">nrounds =</span> <span class="dv">50</span>, <span class="at">early_stopping_rounds =</span> <span class="dv">10</span>, <span class="at">print_every_n =</span> 10L, <span class="at">verbose =</span> <span class="dv">0</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">xgb.params =</span> params, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">early_stopping_rounds =</span> <span class="dv">10</span>, <span class="at">print_every_n =</span> 10L, <span class="at">verbose =</span> <span class="dv">0</span></span>
 <span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="tune-hyperparameters" class="section level3">
 <h3>Tune hyperparameters</h3>
 <p>Imputation performance can be affected by the hyperparameter
-settings. It may seem daunting to tune a large set of hyperparameters,
-but often we can narrow down the search as many hyperparameters are
-correlated. In our package, we have a function <code>mixgb_cv()</code>
-to tune <code>nrounds</code>. There is no default <code>nrounds</code>
-value in <code>XGBoost,</code> so we need to specify it. The default
-<code>nrounds</code> in <code>mixgb</code> is 50. However, we recommend
-using <code>mixgb_cv()</code> to find the optimal <code>nrounds</code>
-first.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cv.results <span class="ot">&lt;-</span> <span class="fu">mixgb_cv</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>evaluation.log</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     iter train_logloss_mean train_logloss_std test_logloss_mean</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1:    1          0.6208135       0.001946554         0.6552126</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2:    2          0.5767785       0.004676169         0.6374645</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3:    3          0.5449469       0.005228210         0.6272369</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4:    4          0.5191374       0.008095561         0.6242182</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5:    5          0.4941135       0.008357847         0.6243667</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6:    6          0.4755729       0.009002235         0.6254604</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7:    7          0.4595016       0.007635777         0.6274494</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8:    8          0.4438848       0.007674532         0.6277083</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9:    9          0.4337404       0.008486617         0.6281046</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10:   10          0.4190590       0.008824536         0.6305885</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11:   11          0.4102110       0.005878129         0.6333391</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12:   12          0.3978915       0.007290803         0.6358570</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13:   13          0.3889896       0.009138579         0.6394993</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14:   14          0.3781350       0.007533795         0.6391836</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     test_logloss_std</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1:      0.005066467</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2:      0.001808090</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3:      0.005509982</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4:      0.005613646</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5:      0.007161814</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6:      0.008257190</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7:      0.011842903</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8:      0.014264475</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9:      0.014754702</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10:      0.013225266</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11:      0.010154894</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12:      0.010633046</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13:      0.009992737</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14:      0.009951158</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>response</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;HFF1&quot;</span></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>best.nrounds</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span></code></pre></div>
+settings. Although tuning a large set of hyperparameters may appear
+intimidating, it is often possible to narrowing down the search space
+because many hyperparameters are correlated. In our package, the
+function <code>mixgb_cv()</code> can be used to tune the number of
+boosting rounds - <code>nrounds</code>. There is no default
+<code>nrounds</code> value in <code>XGBoost,</code> so users are
+required to specify this value themselves. The default
+<code>nrounds</code> in <code>mixgb()</code> is 100. However, we
+recommend using <code>mixgb_cv()</code> to find the optimal
+<code>nrounds</code> first.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">max_depth =</span> <span class="dv">3</span>, <span class="at">subsample =</span> <span class="fl">0.7</span>, <span class="at">nthread =</span><span class="dv">2</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cv.results <span class="ot">&lt;-</span> <span class="fu">mixgb_cv</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">xgb.params =</span> params, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>evaluation.log</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1:    1       5.3744890    0.014675460      5.3750613    0.07086852</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2:    2       3.8332703    0.010838631      3.8372278    0.07087161</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3:    3       2.7718411    0.006272944      2.7770853    0.07691548</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4:    4       2.0595957    0.007274550      2.0664484    0.07566479</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5:    5       1.5868738    0.008584994      1.6054670    0.07819587</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6:    6       1.2907648    0.014248482      1.3210073    0.07759826</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7:    7       1.1071555    0.015394644      1.1530031    0.07783167</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8:    8       1.0000161    0.017887745      1.0566439    0.07895215</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9:    9       0.9414638    0.018404997      1.0082380    0.07867945</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10:   10       0.9074870    0.018933432      0.9829059    0.08001215</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11:   11       0.8876951    0.018986953      0.9682910    0.07752943</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12:   12       0.8764532    0.018322576      0.9609722    0.07684140</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13:   13       0.8670131    0.018055405      0.9576967    0.07822358</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14:   14       0.8604551    0.017868182      0.9551112    0.07878126</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15:   15       0.8545978    0.017994667      0.9556937    0.07906311</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16:   16       0.8497766    0.017346718      0.9574317    0.07809297</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17:   17       0.8456010    0.017452824      0.9579252    0.07793869</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18:   18       0.8412693    0.017763551      0.9566392    0.07777018</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19:   19       0.8369451    0.017050940      0.9582819    0.07699266</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20:   20       0.8329889    0.017898987      0.9579895    0.07783339</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 21:   21       0.8292042    0.018045147      0.9609148    0.07802547</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 22:   22       0.8261493    0.018352210      0.9629216    0.07725943</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 23:   23       0.8218315    0.018426677      0.9660504    0.07674019</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 24:   24       0.8174190    0.018241518      0.9668980    0.07467530</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>response</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;BMPSB2&quot;</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>best.nrounds</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 14</span></span></code></pre></div>
 <p>By default, <code>mixgb_cv()</code> will randomly choose an
 incomplete variable as the response and build an XGBoost model with
-other variables using the complete cases of the dataset. Therefore, each
-run of <code>mixgb_cv()</code> is likely to return different results.
-Users can also specify the response and covariates in the argument
-<code>response</code> and <code>select_features</code>,
-respectively.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cv.results <span class="ot">&lt;-</span> <span class="fu">mixgb_cv</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">nfold =</span> <span class="dv">10</span>, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">early_stopping_rounds =</span> <span class="dv">1</span>, </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">response =</span> <span class="st">&quot;BMPHEAD&quot;</span>, <span class="at">select_features =</span> <span class="fu">c</span>(<span class="st">&quot;HSAGEIR&quot;</span>, <span class="st">&quot;HSSEX&quot;</span>, <span class="st">&quot;DMARETHN&quot;</span>, <span class="st">&quot;BMPRECUM&quot;</span>,                           <span class="st">&quot;BMPSB1&quot;</span>, <span class="st">&quot;BMPSB2&quot;</span>, <span class="st">&quot;BMPTR1&quot;</span>, <span class="st">&quot;BMPTR2&quot;</span>, <span class="st">&quot;BMPWT&quot;</span>), <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+other variables as explanatory variables using the complete cases of the
+dataset. Therefore, each run of <code>mixgb_cv()</code> will likely
+return different results. Users can also specify the response and
+covariates in the argument <code>response</code> and
+<code>select_features</code> respectively.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cv.results <span class="ot">&lt;-</span> <span class="fu">mixgb_cv</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">nfold =</span> <span class="dv">10</span>, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">early_stopping_rounds =</span> <span class="dv">1</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">response =</span> <span class="st">&quot;BMPHEAD&quot;</span>, <span class="at">select_features =</span> <span class="fu">c</span>(<span class="st">&quot;HSAGEIR&quot;</span>, <span class="st">&quot;HSSEX&quot;</span>, <span class="st">&quot;DMARETHN&quot;</span>, <span class="st">&quot;BMPRECUM&quot;</span>,<span class="st">&quot;BMPSB1&quot;</span>, <span class="st">&quot;BMPSB2&quot;</span>,<span class="st">&quot;BMPTR1&quot;</span>, <span class="st">&quot;BMPTR2&quot;</span>, <span class="st">&quot;BMPWT&quot;</span>),<span class="at">xgb.params =</span> params, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>best.nrounds</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 19</span></span></code></pre></div>
-<p>Since using <code>mixgb_cv()</code> with this dataset mostly returns
-a number less than <code>20</code>, I’ll set <code>nrounds = 20</code>
-in <code>mixgb()</code> to obtain <code>m</code> imputed datasets.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>, <span class="at">nrounds =</span> <span class="dv">20</span>)</span></code></pre></div>
-<div id="convert-ordinal-factors-to-integers" class="section level4">
-<h4>Convert ordinal factors to integers</h4>
-<p>If our dataset has ordinal factors, then the imputation process will
-be sped up by converting them to integers. In
-<code>nhanes3_newborn</code> data, there is only one ordinal factor, but
-we can still see that the imputation time is smaller with
-<code>ordinalAsInteger = TRUE</code>. If <code>m</code> and
-<code>maxit</code> are larger, the difference will be even more obvious.
-Note that when <code>ordinalAsInteger = TRUE</code> , the class of these
-ordinal factors in the imputed datasets will also be integer. We
-recommend to use the default PMM setting <code>pmm.type = &quot;auto&quot;</code>,
-which will impute numeric and integer variables with PMM (type 2) and
-impute categorical variables without PMM. If we don’t apply PMM to
-integer variables, the missing values may be imputed as numeric.
-Sometimes this can be problematic, especially when the integers are
-actually converted from ordinal factors. Therefore,
-<code>pmm.type = NULL</code> is disabled when
-<code>ordinalAsInteger = TRUE</code> .</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>, <span class="at">maxit =</span> <span class="dv">1</span>, <span class="at">ordinalAsInteger =</span> <span class="cn">FALSE</span>))</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    user  system elapsed </span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  10.626   0.235  10.907</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>, <span class="at">maxit =</span> <span class="dv">1</span>, <span class="at">ordinalAsInteger =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    user  system elapsed </span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  10.532   0.328  11.148</span></span></code></pre></div>
-</div>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 18</span></span></code></pre></div>
+<p>Let’s just try setting <code>nrounds = cv.results$best.nrounds</code>
+in <code>mixgb()</code> to obtain 5 imputed datasets.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>, <span class="at">nrounds =</span> cv.results<span class="sc">$</span>best.nrounds)</span></code></pre></div>
 </div>
 </div>
 <div id="inspect-multiply-imputed-values" class="section level2">
@@ -546,7 +525,7 @@ diagnostics functions:</p>
 </ol>
 <p>Each function will return <code>m+1</code> panels to compare the
 observed data with <code>m</code> sets of actual imputed values.</p>
-<p>For more details, please check the vignette on github<a href="https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html">Visual
+<p>For more details, please check the vignette on GitHub <a href="https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html">Visual
 diagnostics for multiply imputed values</a>.</p>
 </div>
 
