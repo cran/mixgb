@@ -1,7 +1,7 @@
 # Multiple imputation using xgboost with bootstrap
 
 mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
-                       xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, colsample_bytree = 1, min_child_weight = 1, subsample = 1, tree_method = "auto", gpu_id = 0, predictor = "auto", scale_pos_weight = 1),
+                       xgb.params = list(),
                        nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                        ...) {
   for (var in missing.vars) {
@@ -103,6 +103,44 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
           }
         }
       }
+    } else if (missing.types[var] == "logical") {
+      bin.t <- sort(table(obs.y))
+      # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
+      # when bin.t only has one value: bin.t[1] the only existent class
+      if (is.na(bin.t[2])) {
+        # this binary variable only have one class being observed (e.g., observed values are all "0"s)
+        # skip xgboost training, just impute the only existent class
+        msg <- paste("The logical variable", var, "in the bootstrapped sample only has a single class. The only existent class will be used to impute NAs. Imputation model for this variable may not be reliable. Recommend to get more data. ")
+        warning(msg)
+        sorted.dt[[var]][na.idx] <- as.logical(names(bin.t[1]))
+      } else {
+        if (!is.null(pmm) & pmm.link == "logit") {
+          # pmm by "logit" value
+          obj.type <- "binary:logitraw"
+        } else {
+          # pmm by "prob" , and for no pmm
+          obj.type <- "binary:logistic"
+        }
+        xgb.fit <- xgboost(
+          data = obs.data, label = obs.y, objective = obj.type, eval_metric = "logloss",
+          params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
+          ...
+        )
+        yhatmis <- predict(xgb.fit, mis.data)
+        if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
+          # for pmm.type=NULL or "auto"
+          yhatmis <- ifelse(yhatmis >= 0.5, T, F)
+          sorted.dt[[var]][na.idx] <- yhatmis
+        } else {
+          if (pmm.type == 1) {
+            sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+          } else {
+            # for pmm.type=0 or 2
+            yhatobs <- predict(xgb.fit, Obs.data)
+            sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+          }
+        }
+      }
     } else {
       # multiclass ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
@@ -127,16 +165,15 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
       } else {
         # predict returns probability matrix for each class
         yhatmis <- predict(xgb.fit, mis.data, reshape = TRUE)
+
         if (pmm.type == 1) {
-          # for pmm.type=1 (yobs.list[[var]] is original class "A" "B" "C")
-          yhatmis <- pmm.multiclass(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
-          sorted.dt[[var]][na.idx] <- yhatmis
+          yhatobs <- yhatobs.list[[var]]
         } else {
-          # for pmm.type=0 or 2, obs.y is of interger form   as.integer(obs.y)-1
-          # probability matrix for each class
           yhatobs <- predict(xgb.fit, Obs.data, reshape = TRUE)
-          sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
+
+        yhatmis <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis]
       }
     }
   } # end of for each missing variable
@@ -146,7 +183,6 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
 
 # helper function for mixgb_boot()
 boot <- function(Nrow, sorted.dt, sortedNA.dt, missing.vars, mp) {
-
   # use bootstrap to achieve multiple imputation
   boot.idx <- sample(Nrow, Nrow, replace = TRUE)
   # bootstrapped data with initial imputed values

@@ -9,8 +9,7 @@ mixgb(
   m = 5,
   maxit = 1,
   ordinalAsInteger = FALSE,
-  bootstrap = FALSE,
-  pmm.type = "auto",
+  pmm.type = NULL,
   pmm.k = 5,
   pmm.link = "prob",
   initial.num = "normal",
@@ -18,12 +17,11 @@ mixgb(
   initial.fac = "mode",
   save.models = FALSE,
   save.vars = NULL,
+  save.models.folder = NULL,
   verbose = F,
-  xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1,
-    subsample = 0.7, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,
-    tree_method = "auto", gpu_id = 0, predictor = "auto"),
+  xgb.params = list(),
   nrounds = 100,
-  early_stopping_rounds = 10,
+  early_stopping_rounds = NULL,
   print_every_n = 10L,
   xgboost_verbose = 0,
   ...
@@ -38,28 +36,26 @@ mixgb(
 
 \item{ordinalAsInteger}{Whether to convert ordinal factors to integers. By default, \code{ordinalAsInteger = FALSE}. Setting \code{ordinalAsInteger = TRUE} may speed up the imputation process for large datasets.}
 
-\item{bootstrap}{Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = FALSE}. Setting \code{bootstrap = TRUE} can improve imputation variability if sampling-related hyperparameters of XGBoost are set to 1.}
-
 \item{pmm.type}{The type of predictive mean matching (PMM). Possible values:
 \itemize{
- \item \code{NULL}: Imputations without PMM;
+ \item \code{NULL} (default): Imputations without PMM;
  \item \code{0}: Imputations with PMM type 0;
  \item \code{1}: Imputations with PMM type 1;
  \item \code{2}: Imputations with PMM type 2;
- \item \code{"auto"} (Default): Imputations with PMM type 2 for numeric/integer variables; imputations without PMM for categorical variables.
+ \item \code{"auto"}: Imputations with PMM type 2 for numeric/integer variables; imputations without PMM for categorical variables.
 }}
 
 \item{pmm.k}{The number of donors for predictive mean matching. Default: 5}
 
 \item{pmm.link}{The link for predictive mean matching in binary variables
 \itemize{
- \item \code{"prob"} (Default): use probabilities;
+ \item \code{"prob"} (default): use probabilities;
  \item \code{"logit"}: use logit values.
 }}
 
 \item{initial.num}{Initial imputation method for numeric type data:
 \itemize{
- \item \code{"normal"} (Default);
+ \item \code{"normal"} (default);
  \item \code{"mean"};
  \item \code{"median"};
  \item \code{"mode"};
@@ -68,19 +64,21 @@ mixgb(
 
 \item{initial.int}{Initial imputation method for integer type data:
 \itemize{
- \item \code{"mode"} (Default);
+ \item \code{"mode"} (default);
  \item \code{"sample"}.
 }}
 
 \item{initial.fac}{Initial imputation method for factor type data:
 \itemize{
- \item \code{"mode"} (Default);
+ \item \code{"mode"} (default);
  \item \code{"sample"}.
 }}
 
 \item{save.models}{Whether to save imputation models for imputing new data later on. Default: \code{FALSE}}
 
-\item{save.vars}{For the purpose of imputing new data, the imputation models for response variables specified in \code{save.vars} will be saved. The values in \code{save.vars} can be a vector of names or indices. By default, only the imputation models for variables with missing values in the original data will be saved (\code{save.vars = NULL}). To save imputation models for all variables, users can specify it with \code{save.vars = colnames(data)}.}
+\item{save.vars}{For the purpose of imputing new data, the imputation models for response variables specified in \code{save.vars} will be saved. The values in \code{save.vars} can be a vector of names or indices. By default, only the imputation models for variables with missing values in the original data will be saved (\code{save.vars = NULL}). To save imputation models for all variables, users can specify \code{save.vars = colnames(data)}.}
+
+\item{save.models.folder}{Users can specify a directory to save all imputation models. Models will be saved in JSON format by internally calling \code{xgb.save()}, which is recommended by XGBoost.}
 
 \item{verbose}{Verbose setting for mixgb. If \code{TRUE}, will print out the progress of imputation. Default: \code{FALSE}.}
 
@@ -100,7 +98,7 @@ mixgb(
 If \code{save.models = FALSE}, this function will return a list of \code{m} imputed datasets. If \code{save.models = TRUE}, it will return an object with imputed datasets, saved models and parameters.
 }
 \description{
-This function is used to generate multiply imputed datasets using XGBoost, subsampling and predictive mean matching (PMM).
+This function is used to generate multiply-imputed datasets using XGBoost, subsampling and predictive mean matching (PMM).
 }
 \examples{
 # obtain m multiply datasets without saving models
@@ -108,5 +106,6 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 mixgb.data <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10)
 
 # obtain m multiply imputed datasets and save models for imputing new data later on
-mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
+mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10,
+                   save.models = TRUE, save.models.folder = tempdir())
 }

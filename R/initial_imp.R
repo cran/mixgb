@@ -1,5 +1,5 @@
 # Initially impute a dataset with missing values
-initial_imp <- function(data, initial.num = "normal", initial.int = "mode", initial.fac = "mode", bootstrap = TRUE) {
+initial_imp <- function(data, initial.num = "normal", initial.int = "mode", initial.fac = "mode", bootstrap = FALSE) {
   # @param data A data table (with missing values NA's)
   # @param initial.num Initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
   # @param initial.int Initial imputation method for integer type data ("mode","sample"). Default: "mode"
@@ -18,7 +18,9 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
   ## Data preprocessing
   # 1) sort the dataset with increasing NAs
   origin.names <- colnames(data)
+  #+600MB
   sort.result <- sortNA(data)
+
   sorted.dt <- sort.result$sorted.dt
   sorted.idx <- sort.result$sorted.idx
   sorted.names <- sort.result$sorted.names
@@ -58,6 +60,7 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
   names(Na.idx) <- missing.vars
 
 
+
   for (var in missing.vars) {
     na.idx <- which(is.na(sorted.dt[[var]]))
     Na.idx[[var]] <- na.idx
@@ -67,6 +70,7 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
     if (missing.method[[var]] == "normal") {
       # only works for numeric
       sorted.dt[[var]] <- imp.normal(vec = sorted.dt[[var]], na.idx = na.idx)
+      sorted.dt[, (var) := imp.normal(vec = .SD[[var]], na.idx = na.idx)]
     } else if (missing.method[[var]] == "mean") {
       # only works for numeric
       sorted.dt[[var]] <- imp.mean(vec = sorted.dt[[var]], na.idx = na.idx)

@@ -38,6 +38,44 @@ feature_type <- function(data) {
 }
 
 
+feature_type2 <- function(data) {
+  # Define type for each column
+  Types <- sapply(data, function(var) {
+    # Check primary class of the column
+    var.class <- class(var)[1]
+    switch(var.class,
+      numeric = "numeric",
+      integer = "integer",
+      logical = "logical",
+      factor = ifelse(nlevels(var) == 2, "binary", "multiclass"),
+      ordered = ifelse(nlevels(var) == 2, "binary", "multiclass"),
+      character = stop("Data contains variables of character type. Please change them into factor."),
+      stop(paste0("Unsupported data type: ", var.class))
+    )
+  })
+
+  Types
+}
+
+
+
+cbind_type <- function(data) {
+  # Define type for each column
+  Types <- sapply(data, function(var) {
+    # Check primary class of the column
+    var.class <- class(var)[1]
+    }
+    )
+
+  Types
+}
+
+
+
+
+
+
+
 #' Sort data by increasing number of missing values
 #' @import data.table
 #' @keywords internal

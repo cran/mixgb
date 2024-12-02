@@ -12,7 +12,7 @@
 
 <meta name="author" content="Yongshi Deng" />
 
-<meta name="date" content="2023-02-16" />
+<meta name="date" content="2024-12-01" />
 
 <title>mixgb: Multiple Imputation Through XGBoost</title>
 
@@ -31,27 +31,27 @@ document.addEventListener('DOMContentLoaded', function(e) {
 </script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
 
 
 <style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -62,58 +62,57 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-  { counter-reset: source-line 0; }
+{ counter-reset: source-line 0; }
 pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
+{ position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {   }
+{ }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -122,13 +121,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -335,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">mixgb: Multiple Imputation Through
 XGBoost</h1>
 <h4 class="author">Yongshi Deng</h4>
-<h4 class="date">2023-02-16</h4>
+<h4 class="date">2024-12-01</h4>
 
 
 
@@ -358,45 +364,45 @@ values.</p>
 <code>nhanes3_newborn</code> dataset, which contains 16 variables of
 various types (integer/numeric/factor/ordinal factor). There are 9
 variables with missing values.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixgb)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(nhanes3_newborn)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tibble [2,107 × 16] (S3: tbl_df/tbl/data.frame)</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ HSHSIZER: int [1:2107] 4 3 5 4 4 3 5 3 3 3 ...</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ HSAGEIR : int [1:2107] 2 5 10 10 8 3 10 7 2 7 ...</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ HSSEX   : Factor w/ 2 levels &quot;1&quot;,&quot;2&quot;: 2 1 2 2 1 1 2 2 2 1 ...</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ DMARACER: Factor w/ 3 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;: 1 1 2 1 1 1 2 1 2 2 ...</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ DMAETHNR: Factor w/ 3 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;: 3 1 3 3 3 3 3 3 3 3 ...</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ DMARETHN: Factor w/ 4 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;: 1 3 2 1 1 1 2 1 2 2 ...</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ BMPHEAD : num [1:2107] 39.3 45.4 43.9 45.8 44.9 42.2 45.8 NA 40.2 44.5 ...</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Head circumference (cm)&quot;</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ BMPRECUM: num [1:2107] 59.5 69.2 69.8 73.8 69 61.7 74.8 NA 64.5 70.2 ...</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Recumbent length (cm)&quot;</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ BMPSB1  : num [1:2107] 8.2 13 6 8 8.2 9.4 5.2 NA 7 5.9 ...</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;First subscapular skinfold (mm)&quot;</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ BMPSB2  : num [1:2107] 8 13 5.6 10 7.8 8.4 5.2 NA 7 5.4 ...</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Second subscapular skinfold (mm)&quot;</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ BMPTR1  : num [1:2107] 9 15.6 7 16.4 9.8 9.6 5.8 NA 11 6.8 ...</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;First triceps skinfold (mm)&quot;</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ BMPTR2  : num [1:2107] 9.4 14 8.2 12 8.8 8.2 6.6 NA 10.9 7.6 ...</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Second triceps skinfold (mm)&quot;</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ BMPWT   : num [1:2107] 6.35 9.45 7.15 10.7 9.35 7.15 8.35 NA 7.35 8.65 ...</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Weight (kg)&quot;</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ DMPPIR  : num [1:2107] 3.186 1.269 0.416 2.063 1.464 ...</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Poverty income ratio&quot;</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ HFF1    : Factor w/ 2 levels &quot;1&quot;,&quot;2&quot;: 2 2 1 1 1 2 2 1 2 1 ...</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ HYD1    : Ord.factor w/ 5 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 1 3 1 1 1 1 1 1 2 1 ...</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(nhanes3_newborn))</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM </span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        0        0        0        0        0        0      124      114 </span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 </span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      161      169      124      167      117      192        7        0</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(mixgb)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">str</span>(nhanes3_newborn)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#&gt; tibble [2,107 × 16] (S3: tbl_df/tbl/data.frame)</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt;  $ HSHSIZER: int [1:2107] 4 3 5 4 4 3 5 3 3 3 ...</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt;  $ HSAGEIR : int [1:2107] 2 5 10 10 8 3 10 7 2 7 ...</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt;  $ HSSEX   : Factor w/ 2 levels &quot;1&quot;,&quot;2&quot;: 2 1 2 2 1 1 2 2 2 1 ...</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt;  $ DMARACER: Factor w/ 3 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;: 1 1 2 1 1 1 2 1 2 2 ...</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt;  $ DMAETHNR: Factor w/ 3 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;: 3 1 3 3 3 3 3 3 3 3 ...</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt;  $ DMARETHN: Factor w/ 4 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;: 1 3 2 1 1 1 2 1 2 2 ...</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt;  $ BMPHEAD : num [1:2107] 39.3 45.4 43.9 45.8 44.9 42.2 45.8 NA 40.2 44.5 ...</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Head circumference (cm)&quot;</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt;  $ BMPRECUM: num [1:2107] 59.5 69.2 69.8 73.8 69 61.7 74.8 NA 64.5 70.2 ...</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Recumbent length (cm)&quot;</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt;  $ BMPSB1  : num [1:2107] 8.2 13 6 8 8.2 9.4 5.2 NA 7 5.9 ...</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;First subscapular skinfold (mm)&quot;</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt;  $ BMPSB2  : num [1:2107] 8 13 5.6 10 7.8 8.4 5.2 NA 7 5.4 ...</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Second subscapular skinfold (mm)&quot;</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="co">#&gt;  $ BMPTR1  : num [1:2107] 9 15.6 7 16.4 9.8 9.6 5.8 NA 11 6.8 ...</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;First triceps skinfold (mm)&quot;</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="co">#&gt;  $ BMPTR2  : num [1:2107] 9.4 14 8.2 12 8.8 8.2 6.6 NA 10.9 7.6 ...</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Second triceps skinfold (mm)&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="co">#&gt;  $ BMPWT   : num [1:2107] 6.35 9.45 7.15 10.7 9.35 7.15 8.35 NA 7.35 8.65 ...</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Weight (kg)&quot;</span></span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="co">#&gt;  $ DMPPIR  : num [1:2107] 3.186 1.269 0.416 2.063 1.464 ...</span></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;label&quot;)= chr &quot;Poverty income ratio&quot;</span></span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="co">#&gt;  $ HFF1    : Factor w/ 2 levels &quot;1&quot;,&quot;2&quot;: 2 2 1 1 1 2 2 1 2 1 ...</span></span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a><span class="co">#&gt;  $ HYD1    : Ord.factor w/ 5 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 1 3 1 1 1 1 1 1 2 1 ...</span></span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(nhanes3_newborn))</span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a><span class="co">#&gt; HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM </span></span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a><span class="co">#&gt;        0        0        0        0        0        0      124      114 </span></span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a><span class="co">#&gt;   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 </span></span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a><span class="co">#&gt;      161      169      124      167      117      192        7        0</span></span></code></pre></div>
 <p>To impute this dataset, we can use the default settings. The default
 number of imputed datasets is <code>m = 5</code>. Note that we do not
 need to convert our data into dgCMatrix or one-hot coding format. Our
 package will automatically convert it for you. Variables should be of
 the following types: numeric, integer, factor or ordinal factor.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use mixgb with default settings</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># use mixgb with default settings</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>)</span></code></pre></div>
 <div id="customize-imputation-settings" class="section level3">
 <h3>Customize imputation settings</h3>
 <p>We can also customize imputation settings:</p>
@@ -423,30 +429,22 @@ argument.</p></li>
 <li><p>Whether to save models for imputing newdata
 <code>save.models</code> and <code>save.vars</code>.</p></li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use mixgb with chosen settings</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_depth =</span> <span class="dv">3</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma =</span> <span class="dv">0</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta =</span> <span class="fl">0.3</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_child_weight =</span> <span class="dv">1</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">subsample =</span> <span class="fl">0.7</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">colsample_bytree =</span> <span class="dv">1</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">colsample_bylevel =</span> <span class="dv">1</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">colsample_bynode =</span> <span class="dv">1</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">nthread =</span> <span class="dv">2</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">tree_method =</span> <span class="st">&quot;auto&quot;</span>,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">gpu_id =</span> <span class="dv">0</span>,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictor =</span> <span class="st">&quot;auto&quot;</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>, <span class="at">maxit =</span> <span class="dv">1</span>,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">ordinalAsInteger =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">pmm.type =</span> <span class="st">&quot;auto&quot;</span>, <span class="at">pmm.k =</span> <span class="dv">5</span>, <span class="at">pmm.link =</span> <span class="st">&quot;prob&quot;</span>,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial.num =</span> <span class="st">&quot;normal&quot;</span>, <span class="at">initial.int =</span> <span class="st">&quot;mode&quot;</span>, <span class="at">initial.fac =</span> <span class="st">&quot;mode&quot;</span>,</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">save.models =</span> <span class="cn">FALSE</span>, <span class="at">save.vars =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">xgb.params =</span> params, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">early_stopping_rounds =</span> <span class="dv">10</span>, <span class="at">print_every_n =</span> 10L, <span class="at">verbose =</span> <span class="dv">0</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Use mixgb with chosen settings</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">max_depth =</span> <span class="dv">5</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">subsample =</span> <span class="fl">0.9</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">nthread =</span> <span class="dv">2</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">tree_method =</span> <span class="st">&quot;hist&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">10</span>, <span class="at">maxit =</span> <span class="dv">2</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">ordinalAsInteger =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">pmm.type =</span> <span class="st">&quot;auto&quot;</span>, <span class="at">pmm.k =</span> <span class="dv">5</span>, <span class="at">pmm.link =</span> <span class="st">&quot;prob&quot;</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="at">initial.num =</span> <span class="st">&quot;normal&quot;</span>, <span class="at">initial.int =</span> <span class="st">&quot;mode&quot;</span>, <span class="at">initial.fac =</span> <span class="st">&quot;mode&quot;</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  <span class="at">save.models =</span> <span class="cn">FALSE</span>, <span class="at">save.vars =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  <span class="at">xgb.params =</span> params, <span class="at">nrounds =</span> <span class="dv">200</span>, <span class="at">early_stopping_rounds =</span> <span class="dv">10</span>, <span class="at">print_every_n =</span> <span class="dv">10</span><span class="dt">L</span>, <span class="at">verbose =</span> <span class="dv">0</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="tune-hyperparameters" class="section level3">
 <h3>Tune hyperparameters</h3>
@@ -461,39 +459,47 @@ required to specify this value themselves. The default
 <code>nrounds</code> in <code>mixgb()</code> is 100. However, we
 recommend using <code>mixgb_cv()</code> to find the optimal
 <code>nrounds</code> first.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">max_depth =</span> <span class="dv">3</span>, <span class="at">subsample =</span> <span class="fl">0.7</span>, <span class="at">nthread =</span><span class="dv">2</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cv.results <span class="ot">&lt;-</span> <span class="fu">mixgb_cv</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">xgb.params =</span> params, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>evaluation.log</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1:    1       5.3744890    0.014675460      5.3750613    0.07086852</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2:    2       3.8332703    0.010838631      3.8372278    0.07087161</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3:    3       2.7718411    0.006272944      2.7770853    0.07691548</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4:    4       2.0595957    0.007274550      2.0664484    0.07566479</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5:    5       1.5868738    0.008584994      1.6054670    0.07819587</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6:    6       1.2907648    0.014248482      1.3210073    0.07759826</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7:    7       1.1071555    0.015394644      1.1530031    0.07783167</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8:    8       1.0000161    0.017887745      1.0566439    0.07895215</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9:    9       0.9414638    0.018404997      1.0082380    0.07867945</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10:   10       0.9074870    0.018933432      0.9829059    0.08001215</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11:   11       0.8876951    0.018986953      0.9682910    0.07752943</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12:   12       0.8764532    0.018322576      0.9609722    0.07684140</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13:   13       0.8670131    0.018055405      0.9576967    0.07822358</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14:   14       0.8604551    0.017868182      0.9551112    0.07878126</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15:   15       0.8545978    0.017994667      0.9556937    0.07906311</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16:   16       0.8497766    0.017346718      0.9574317    0.07809297</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17:   17       0.8456010    0.017452824      0.9579252    0.07793869</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18:   18       0.8412693    0.017763551      0.9566392    0.07777018</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19:   19       0.8369451    0.017050940      0.9582819    0.07699266</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20:   20       0.8329889    0.017898987      0.9579895    0.07783339</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 21:   21       0.8292042    0.018045147      0.9609148    0.07802547</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 22:   22       0.8261493    0.018352210      0.9629216    0.07725943</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 23:   23       0.8218315    0.018426677      0.9660504    0.07674019</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 24:   24       0.8174190    0.018241518      0.9668980    0.07467530</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>response</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;BMPSB2&quot;</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>best.nrounds</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 14</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">max_depth =</span> <span class="dv">3</span>, <span class="at">subsample =</span> <span class="fl">0.7</span>, <span class="at">nthread =</span> <span class="dv">2</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>cv.results <span class="ot">&lt;-</span> <span class="fu">mixgb_cv</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">xgb.params =</span> params, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>cv.results<span class="sc">$</span>evaluation.log</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;      iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt;     &lt;num&gt;           &lt;num&gt;          &lt;num&gt;          &lt;num&gt;         &lt;num&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;  1:     1       5.6264775    0.012654152      5.6232637    0.06990575</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;  2:     2       3.9907647    0.005318002      3.9932861    0.06224862</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt;  3:     3       2.8464760    0.006524204      2.8525462    0.05902746</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;  4:     4       2.0574403    0.006270467      2.0662760    0.06732408</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt;  5:     5       1.5162559    0.007352323      1.5294432    0.07411480</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;  6:     6       1.1549950    0.011001226      1.1775540    0.07831956</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;  7:     7       0.9211032    0.017621583      0.9557387    0.08728562</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;  8:     8       0.7762264    0.020489332      0.8226546    0.09638312</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt;  9:     9       0.6872187    0.020336335      0.7405964    0.10173064</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 10:    10       0.6327497    0.022435161      0.6959031    0.10413192</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 11:    11       0.5997786    0.021871348      0.6718497    0.10540036</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; 12:    12       0.5802680    0.021192239      0.6623342    0.10318676</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; 13:    13       0.5692138    0.021683524      0.6547936    0.10517984</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 14:    14       0.5605627    0.022707172      0.6498806    0.10645453</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 15:    15       0.5533794    0.022272710      0.6470849    0.10711865</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; 16:    16       0.5487505    0.022556864      0.6456341    0.10695166</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; 17:    17       0.5429231    0.022675312      0.6459804    0.10622881</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; 18:    18       0.5394071    0.022504066      0.6455456    0.10644238</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; 19:    19       0.5332706    0.019513758      0.6467061    0.10552916</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; 20:    20       0.5293077    0.019003029      0.6461716    0.10458823</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; 21:    21       0.5264754    0.019843989      0.6449325    0.10593313</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; 22:    22       0.5242713    0.019797220      0.6456301    0.10578064</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; 23:    23       0.5207213    0.018940991      0.6470836    0.10516188</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; 24:    24       0.5181564    0.017855978      0.6478329    0.10496112</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; 25:    25       0.5162895    0.018038007      0.6480913    0.10369702</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; 26:    26       0.5127118    0.017277472      0.6485172    0.10317041</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; 27:    27       0.5098374    0.017414876      0.6494183    0.10139164</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt; 28:    28       0.5038374    0.014997959      0.6516332    0.10140255</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt; 29:    29       0.5007207    0.014485638      0.6523519    0.10034947</span></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt; 30:    30       0.4977845    0.014088024      0.6524572    0.09967298</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="co">#&gt; 31:    31       0.4957854    0.013787408      0.6523202    0.10004892</span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt;      iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>cv.results<span class="sc">$</span>response</span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt; [1] &quot;BMPWT&quot;</span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a>cv.results<span class="sc">$</span>best.nrounds</span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt; [1] 21</span></span></code></pre></div>
 <p>By default, <code>mixgb_cv()</code> will randomly choose an
 incomplete variable as the response and build an XGBoost model with
 other variables as explanatory variables using the complete cases of the
@@ -501,32 +507,28 @@ dataset. Therefore, each run of <code>mixgb_cv()</code> will likely
 return different results. Users can also specify the response and
 covariates in the argument <code>response</code> and
 <code>select_features</code> respectively.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cv.results <span class="ot">&lt;-</span> <span class="fu">mixgb_cv</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">nfold =</span> <span class="dv">10</span>, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">early_stopping_rounds =</span> <span class="dv">1</span>,</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">response =</span> <span class="st">&quot;BMPHEAD&quot;</span>, <span class="at">select_features =</span> <span class="fu">c</span>(<span class="st">&quot;HSAGEIR&quot;</span>, <span class="st">&quot;HSSEX&quot;</span>, <span class="st">&quot;DMARETHN&quot;</span>, <span class="st">&quot;BMPRECUM&quot;</span>,<span class="st">&quot;BMPSB1&quot;</span>, <span class="st">&quot;BMPSB2&quot;</span>,<span class="st">&quot;BMPTR1&quot;</span>, <span class="st">&quot;BMPTR2&quot;</span>, <span class="st">&quot;BMPWT&quot;</span>),<span class="at">xgb.params =</span> params, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>cv.results<span class="sc">$</span>best.nrounds</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 18</span></span></code></pre></div>
-<p>Let’s just try setting <code>nrounds = cv.results$best.nrounds</code>
-in <code>mixgb()</code> to obtain 5 imputed datasets.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>, <span class="at">nrounds =</span> cv.results<span class="sc">$</span>best.nrounds)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>cv.results <span class="ot">&lt;-</span> <span class="fu">mixgb_cv</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">data =</span> nhanes3_newborn, <span class="at">nfold =</span> <span class="dv">10</span>, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">early_stopping_rounds =</span> <span class="dv">1</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">response =</span> <span class="st">&quot;BMPHEAD&quot;</span>, <span class="at">select_features =</span> <span class="fu">c</span>(<span class="st">&quot;HSAGEIR&quot;</span>, <span class="st">&quot;HSSEX&quot;</span>, <span class="st">&quot;DMARETHN&quot;</span>, <span class="st">&quot;BMPRECUM&quot;</span>, <span class="st">&quot;BMPSB1&quot;</span>, <span class="st">&quot;BMPSB2&quot;</span>, <span class="st">&quot;BMPTR1&quot;</span>, <span class="st">&quot;BMPTR2&quot;</span>, <span class="st">&quot;BMPWT&quot;</span>), <span class="at">xgb.params =</span> params, <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>cv.results<span class="sc">$</span>best.nrounds</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; [1] 19</span></span></code></pre></div>
+<p>Let us just try setting
+<code>nrounds = cv.results$best.nrounds</code> in <code>mixgb()</code>
+to obtain 5 imputed datasets.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>imputed.data <span class="ot">&lt;-</span> <span class="fu">mixgb</span>(<span class="at">data =</span> nhanes3_newborn, <span class="at">m =</span> <span class="dv">5</span>, <span class="at">nrounds =</span> cv.results<span class="sc">$</span>best.nrounds)</span></code></pre></div>
 </div>
 </div>
 <div id="inspect-multiply-imputed-values" class="section level2">
 <h2>Inspect multiply imputed values</h2>
-<p>The <code>mixgb</code> package provides the following visual
-diagnostics functions:</p>
-<ol style="list-style-type: lower-roman">
-<li><p>Single variable: <code>plot_hist()</code>,
-<code>plot_box()</code>, <code>plot_bar()</code> ;</p></li>
-<li><p>Two variables: <code>plot_2num()</code>,
-<code>plot_2fac()</code>, <code>plot_1num1fac()</code> ;</p></li>
-<li><p>Three variables: <code>plot_2num1fac()</code>,
-<code>plot_1num2fac()</code>.</p></li>
-</ol>
-<p>Each function will return <code>m+1</code> panels to compare the
-observed data with <code>m</code> sets of actual imputed values.</p>
-<p>For more details, please check the vignette on GitHub <a href="https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html">Visual
-diagnostics for multiply imputed values</a>.</p>
+<p>The <code>mixgb</code> package used to provide a few visual
+diagnostics functions. However, we have moved these functions to the
+<code>vismi</code> package, which provides a wide range of visualisation
+tools for multiple imputation.</p>
+<p>For more details, please check the <code>vismi</code> package on
+GitHub <a href="https://github.com/agnesdeng/vismi">Visualisation Tools
+for Multiple Imputation</a>.</p>
 </div>
 
 

@@ -1,0 +1,12 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "Multiple Imputation Through XGBoost",
+  author   = "Yongshi Deng, Thomas Lumley",
+  journal  = "Journal of Computational and Graphical Statistics",
+  volume   = "33",
+  number = "2",
+  pages = "352-363",
+  year = "2023",
+  publisher = "Taylor & Francis",
+  doi = "10.1080/10618600.2023.2252501",
+)

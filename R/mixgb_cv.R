@@ -17,10 +17,14 @@
 #' cv.results <- mixgb_cv(data = nhanes3, xgb.params = params)
 #' cv.results$best.nrounds
 #'
-#' imputed.data <- mixgb(data = nhanes3, m = 3, xgb.params = params, nrounds = cv.results$best.nrounds)
+#' imputed.data <- mixgb(data = nhanes3, m = 3, xgb.params = params,
+#'                       nrounds = cv.results$best.nrounds)
 mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_features = NULL,
-                     xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1, subsample = 0.7, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, tree_method = "auto", gpu_id = 0, predictor = "auto"),
+                     xgb.params = list(),
                      stringsAsFactors = FALSE, verbose = TRUE, ...) {
+  xgb.params <- do.call("default_params", xgb.params)
+  xgb.params
+
   num.cc <- sum(complete.cases(data))
 
 
@@ -82,6 +86,11 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
     obj.type <- "binary:logistic"
     eval_metric <- "logloss"
     obs.y <- as.integer(cc.data[[response]]) - 1
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+  } else if (Types[response] == "logical") {
+    obj.type <- "binary:logistic"
+    eval_metric <- "logloss"
+    obs.y <- cc.data[[response]]
     cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   } else {
     obj.type <- "multi:softmax"
