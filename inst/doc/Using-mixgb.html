@@ -12,7 +12,7 @@
 
 <meta name="author" content="Yongshi Deng" />
 
-<meta name="date" content="2024-12-01" />
+<meta name="date" content="2025-04-07" />
 
 <title>mixgb: Multiple Imputation Through XGBoost</title>
 
@@ -341,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">mixgb: Multiple Imputation Through
 XGBoost</h1>
 <h4 class="author">Yongshi Deng</h4>
-<h4 class="date">2024-12-01</h4>
+<h4 class="date">2025-04-07</h4>
 
 
 
@@ -464,42 +464,38 @@ recommend using <code>mixgb_cv()</code> to find the optimal
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>cv.results<span class="sc">$</span>evaluation.log</span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;      iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt;     &lt;num&gt;           &lt;num&gt;          &lt;num&gt;          &lt;num&gt;         &lt;num&gt;</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;  1:     1       5.6264775    0.012654152      5.6232637    0.06990575</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;  2:     2       3.9907647    0.005318002      3.9932861    0.06224862</span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt;  3:     3       2.8464760    0.006524204      2.8525462    0.05902746</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;  4:     4       2.0574403    0.006270467      2.0662760    0.06732408</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt;  5:     5       1.5162559    0.007352323      1.5294432    0.07411480</span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;  6:     6       1.1549950    0.011001226      1.1775540    0.07831956</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;  7:     7       0.9211032    0.017621583      0.9557387    0.08728562</span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;  8:     8       0.7762264    0.020489332      0.8226546    0.09638312</span></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt;  9:     9       0.6872187    0.020336335      0.7405964    0.10173064</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 10:    10       0.6327497    0.022435161      0.6959031    0.10413192</span></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 11:    11       0.5997786    0.021871348      0.6718497    0.10540036</span></span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; 12:    12       0.5802680    0.021192239      0.6623342    0.10318676</span></span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; 13:    13       0.5692138    0.021683524      0.6547936    0.10517984</span></span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 14:    14       0.5605627    0.022707172      0.6498806    0.10645453</span></span>
-<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 15:    15       0.5533794    0.022272710      0.6470849    0.10711865</span></span>
-<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; 16:    16       0.5487505    0.022556864      0.6456341    0.10695166</span></span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; 17:    17       0.5429231    0.022675312      0.6459804    0.10622881</span></span>
-<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; 18:    18       0.5394071    0.022504066      0.6455456    0.10644238</span></span>
-<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; 19:    19       0.5332706    0.019513758      0.6467061    0.10552916</span></span>
-<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; 20:    20       0.5293077    0.019003029      0.6461716    0.10458823</span></span>
-<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; 21:    21       0.5264754    0.019843989      0.6449325    0.10593313</span></span>
-<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; 22:    22       0.5242713    0.019797220      0.6456301    0.10578064</span></span>
-<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; 23:    23       0.5207213    0.018940991      0.6470836    0.10516188</span></span>
-<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; 24:    24       0.5181564    0.017855978      0.6478329    0.10496112</span></span>
-<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; 25:    25       0.5162895    0.018038007      0.6480913    0.10369702</span></span>
-<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; 26:    26       0.5127118    0.017277472      0.6485172    0.10317041</span></span>
-<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; 27:    27       0.5098374    0.017414876      0.6494183    0.10139164</span></span>
-<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt; 28:    28       0.5038374    0.014997959      0.6516332    0.10140255</span></span>
-<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt; 29:    29       0.5007207    0.014485638      0.6523519    0.10034947</span></span>
-<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt; 30:    30       0.4977845    0.014088024      0.6524572    0.09967298</span></span>
-<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="co">#&gt; 31:    31       0.4957854    0.013787408      0.6523202    0.10004892</span></span>
-<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt;      iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
-<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>cv.results<span class="sc">$</span>response</span>
-<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt; [1] &quot;BMPWT&quot;</span></span>
-<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a>cv.results<span class="sc">$</span>best.nrounds</span>
-<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt; [1] 21</span></span></code></pre></div>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;  1:     1       47.953069     0.02887792      47.943522     0.2022316</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;  2:     2       33.696521     0.02157801      33.690149     0.1994458</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt;  3:     3       23.738196     0.01598159      23.749785     0.1977378</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;  4:     4       16.769628     0.02555824      16.782115     0.2085698</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt;  5:     5       11.919335     0.02170435      11.938467     0.2127997</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;  6:     6        8.581559     0.03198676       8.616413     0.2644566</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;  7:     7        6.295901     0.03219033       6.336111     0.3095945</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;  8:     8        4.786384     0.05469584       4.851058     0.3579966</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt;  9:     9        3.800631     0.06778147       3.900530     0.3995183</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 10:    10        3.194553     0.08204794       3.336379     0.4238159</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 11:    11        2.828824     0.09147260       3.012366     0.4541305</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; 12:    12        2.622492     0.09779780       2.835412     0.4676225</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; 13:    13        2.502706     0.09922714       2.748699     0.4574018</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 14:    14        2.420211     0.09825536       2.717810     0.4556033</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 15:    15        2.375800     0.09800962       2.689850     0.4593614</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; 16:    16        2.334678     0.10517289       2.676588     0.4522710</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; 17:    17        2.315079     0.10752478       2.665412     0.4504448</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; 18:    18        2.289319     0.10471521       2.673480     0.4397764</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; 19:    19        2.270184     0.10218612       2.670527     0.4378170</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; 20:    20        2.253590     0.10354572       2.665598     0.4403487</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; 21:    21        2.231716     0.10002020       2.670749     0.4395124</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; 22:    22        2.220662     0.10168917       2.673183     0.4429654</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; 23:    23        2.200946     0.10075459       2.706757     0.4538523</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; 24:    24        2.186310     0.09924333       2.706875     0.4540316</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; 25:    25        2.167716     0.09681875       2.713598     0.4604745</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; 26:    26        2.156608     0.10162004       2.726646     0.4567566</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; 27:    27        2.139597     0.10030344       2.732775     0.4519637</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt;      iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>cv.results<span class="sc">$</span>response</span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt; [1] &quot;BMPRECUM&quot;</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>cv.results<span class="sc">$</span>best.nrounds</span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt; [1] 17</span></span></code></pre></div>
 <p>By default, <code>mixgb_cv()</code> will randomly choose an
 incomplete variable as the response and build an XGBoost model with
 other variables as explanatory variables using the complete cases of the
